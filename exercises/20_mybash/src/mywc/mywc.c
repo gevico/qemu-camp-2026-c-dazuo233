@@ -26,8 +26,19 @@ void add_word(WordCount **hash_table, const char *word) {
   unsigned int index = hash(word);
   WordCount *entry = hash_table[index];
 
-    // TODO: 在这里添加你的代码
-    // I AM NOT DONE
+    while (entry != NULL) {
+      if (strcmp(entry->word, word) == 0) {
+          entry->count++;
+          return;
+      }
+      entry = entry->next;
+    }
+    WordCount *new_entry = malloc(sizeof(WordCount));
+    strncpy(new_entry->word, word, MAX_WORD_LEN - 1);
+    new_entry->word[MAX_WORD_LEN - 1] = '\0';
+    new_entry->count = 1;
+    new_entry->next = hash_table[index];
+    hash_table[index] = new_entry;
 }
 
 // 打印单词统计结果
@@ -35,8 +46,27 @@ void print_word_counts(WordCount **hash_table) {
   printf("Word Count Statistics:\n");
   printf("======================\n");
 
-    // TODO: 在这里添加你的代码
-    // I AM NOT DONE
+    WordCount *all[10000];
+    int total = 0;
+    for (int i = 0; i < HASH_SIZE; i++) {
+      WordCount *entry = hash_table[i];
+      while (entry != NULL) {
+          all[total++] = entry;
+          entry = entry->next;
+      }
+    }
+    for (int i = 0; i < total - 1; i++) {
+      for (int j = i + 1; j < total; j++) {
+          if (all[j]->count > all[i]->count) {
+              WordCount *tmp = all[i];
+              all[i] = all[j];
+              all[j] = tmp;
+          }
+      }
+    }
+    for (int i = 0; i < total; i++) {
+      printf("%-21s%d\n", all[i]->word, all[i]->count);
+    }
 }
 
 // 释放哈希表内存

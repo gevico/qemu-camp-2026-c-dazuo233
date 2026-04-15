@@ -1,19 +1,36 @@
+#define _POSIX_C_SOURCE 200809L
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
 
-/**
- * URL参数解析器
- * 输入：包含http/https超链接的字符串
- * 输出：解析出所有的key-value键值对，每行显示一个
- */
-
 int parse_url(const char* url) {
     int err = 0;
 
-    // TODO: 在这里添加你的代码
-    // I AM NOT DONE
+    const char *query = strchr(url, '?');
+    if (!query) {
+        err = 1;
+        goto exit;
+    }
+    query++;
+
+    char *query_copy = strdup(query);
+    if (!query_copy) {
+        err = 2;
+        goto exit;
+    }
+
+    char *pair = strtok(query_copy, "&");
+    while (pair != NULL) {
+        char *eq = strchr(pair, '=');
+        if (eq) {
+            *eq = '\0';
+            printf("key = %s, value = %s\n", pair, eq + 1);
+        }
+        pair = strtok(NULL, "&");
+    }
+
+    free(query_copy);
 
 exit:
     return err;

@@ -8,11 +8,6 @@
 int shell_parse(char *buf, char *argv[]);
 void execute_command(int argc, char *argv[]);
 
-// in:  format -> hello world "hello world" 1234567
-// Multiple command parameters entered from the command line (number of parameters does not exceed 10)
-// out:  format -> Parameter X: Content, Length: X
-// Parse the command parameters through a character pointer array, and sequentially display the content and length of each parameter on the screen
-//
 int main(void)
 {
     FILE *file;
@@ -22,11 +17,11 @@ int main(void)
 
     file = fopen("command_file.txt", "r");
     if (!file) {
-        fprintf(stderr, "❌ Error: Cannot open input file '%s'\n", "command_file.txt");
+        fprintf(stderr, "Error: Cannot open input file '%s'\n", "command_file.txt");
         return 1;
     }
 
-    printf("✅ Reading commands from '%s':\n\n", "command_file.txt");
+    printf("Reading commands from '%s':\n\n", "command_file.txt");
 
     while (fgets(input, MAX_INPUT_LENGTH, file) != NULL) {
         input[strcspn(input, "\n")] = '\0';
@@ -35,12 +30,12 @@ int main(void)
             continue;
         }
 
-        printf("➡️  Input: %s\n", input);
+        printf("Input: %s\n", input);
 
         argc = shell_parse(input, argv);
 
         if (argc == 0) {
-            printf("⚠️  No valid command parsed.\n\n");
+            printf("No valid command parsed.\n\n");
             continue;
         }
 
@@ -52,16 +47,26 @@ int main(void)
     return 0;
 }
 
-// shell_parse 和 execute_command 保持不变
 int shell_parse(char *buf, char *argv[])
 {
     int argc = 0;
     int state = 0;
-    // TODO: 在这里添加你的代码，完成命令行解析
-    // 功能：将输入字符串buf按空格分割成多个参数，存入argv数组
-    // 返回：参数个数argc
-    // 提示：使用状态机的方式处理，注意处理字符串结束符
-    // I AM NOT DONE
+    char *p = buf;
+    while (*p != '\0' && argc < MAX_ARGS) {
+        if (state == 0) {
+            if (*p != ' ' && *p != '\t') {
+                argv[argc] = p;
+                argc++;
+                state = 1;
+            }
+        } else {
+            if (*p == ' ' || *p == '\t') {
+                *p = '\0';
+                state = 0;
+            }
+        }
+        p++;
+    }
     return argc;
 }
 

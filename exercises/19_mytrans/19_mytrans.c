@@ -1,4 +1,3 @@
-// main.c
 #include "myhash.h"
 #include <ctype.h>
 #include <stdint.h>
@@ -28,7 +27,7 @@ int main() {
 
   FILE* file = fopen("text.txt", "r");
   if (file == NULL) {
-    fprintf(stderr, "无法打开文件 dict.txt。\n");
+    fprintf(stderr, "无法打开文件 text.txt。\n");
     free_hash_table(table);
     return 1;
   }
@@ -41,9 +40,23 @@ int main() {
         continue;
     }
 
-    // 使用 strtok 按空格分割单词
-    // TODO: 在这里添加你的代码
-    // I AM NOT DONE
+    char line_copy[256];
+    strncpy(line_copy, line, sizeof(line_copy) - 1);
+    line_copy[sizeof(line_copy) - 1] = '\0';
+    to_lowercase(line_copy);
+
+    char *word = strtok(line_copy, " ");
+    while (word != NULL) {
+      const char *translation = hash_table_lookup(table, word);
+      printf("原文: %s\t", word);
+      if (translation) {
+          printf("翻译: %s\n", translation);
+      } else {
+          printf("未找到该单词的翻译。\n");
+      }
+
+      word = strtok(NULL, " ");
+    }
   }
 
   free_hash_table(table);
