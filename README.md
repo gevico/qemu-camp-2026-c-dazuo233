@@ -78,4 +78,4 @@
 - GitHub Classroom 生成的学生仓库直接 `push main`
 - `pull_request` 场景下只做评测，不回传 OpenCamp
 
-工作流文件在 `.github/workflows/opencamp-autograding.yml`。
+工作流文件在 `.github/workflows/opencamp-autograding.yml`。add github_username to trigger re-grade
